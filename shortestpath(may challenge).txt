@@ -1,0 +1,93 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define long long int int;
+void ComputeShortestPath(int i,int k,vector<vector<int>> & shortestvect,map<pair<int,int>,int> &mp,vector<bool> & visited
+,vector<int> & ans,multiset<int> & mt,int sum)
+{
+    visited[i]=true;
+    if(mt.size()<=k)
+    ans[i]=0;
+    else
+    {
+        int weightreduced=0,s=k;
+        for(auto it =mt.rbegin();it!=mt.rend();++it)
+        {
+            weightreduced+=*it;
+            s--;
+            if(s==0)
+            break;
+        }
+        ans[i]=sum-weightreduced;
+    }
+    int j,weight;
+    for(j=0;j<shortestvect[i].size();j++)
+    {
+        if(!visited[shortestvect[i][j]])
+        {
+            weight = mp[make_pair(i,shortestvect[i][j])];
+            mt.insert(weight);
+            ComputeShortestPath(shortestvect[i][j],k,shortestvect,mp,visited,ans,mt,sum+weight);
+            mt.erase(weight);
+        }
+    }
+}
+void getshortestpath(vector<vector<int>> & shortestvect,vector<vector<int>> &vect,
+map<pair<int,int>,int> &mp,int n)
+{
+        int i,x,y,j;
+       vector<bool> visited(n+1,false);
+       vector<int> distarr(n+1,INT_MAX);
+       vector<int> parent(n+1,-1);
+       priority_queue<pair<int,int>,vector<pair<int,int>>,greater<pair<int,int>>> dq;
+       distarr[1]=0;
+       parent[1]=-1;
+       dq.push(make_pair(0,1));
+       int vertex,dist;
+       pair<int,int> pr;
+       while(!dq.empty())
+       {
+          pr = dq.top();
+          dq.pop();
+          x=pr.second;
+          visited[x]=true;
+          for(i=0;i<vect[x].size();i++)
+          {
+              if(!visited[vect[x][i]]&&distarr[x] + mp[make_pair(vect[x][i],x)]<distarr[vect[x][i]])
+              {
+                  distarr[vect[x][i]]=distarr[x] + mp[make_pair(vect[x][i],x)];
+                  dq.push(make_pair(distarr[x] + mp[make_pair(vect[x][i],x)],vect[x][i]));
+                  parent[vect[x][i]]=x;
+              }
+          }
+       }
+       for(i=2;i<=n;i++)
+       {
+           shortestvect[i].push_back(parent[i]);
+           shortestvect[parent[i]].push_back(i);
+       }
+      
+}
+
+int main ()
+{
+    int n,m,k,i,x,y,u,v;
+    cin>>n>>m>>k;
+    map<pair<int,int>,int> mp;
+    vector<vector<int> > vect (n+1);
+     vector<vector<int> > shortestvect (n+1);
+    for(i=0;i<m;i++)
+    {
+        cin>>x>>y>>v;
+        vect[x].push_back(y);
+        vect[y].push_back(x);
+        mp[make_pair(x,y)]=v;
+        mp[make_pair(y,x)]=v;
+    }
+    getshortestpath(shortestvect,vect,mp,n);
+    vector<int> ans(n+1,0);
+    vector<bool> visited(n+1,false);
+    multiset<int> mt;
+    ComputeShortestPath(1,k,shortestvect,mp,visited,ans,mt,0);
+    for(i=1;i<=n;i++)
+    cout<<ans[i]<<" ";
+}

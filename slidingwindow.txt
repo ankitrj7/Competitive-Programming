@@ -1,0 +1,29 @@
+#include<bits/stdc++.h>
+using namespace std;
+int main()
+{
+    deque<int> dq;
+    vector<int> vect;
+    int n,i,k;
+    cin>>n>>k;
+    vect.resize(n);
+    for(i=0;i<n;i++)
+    cin>>vect[i];
+    
+    for(i=0;i<n;i++)
+    {
+        if(!dq.empty()&&i-k>=dq.front())
+        dq.pop_front();
+        if(dq.empty()|| vect[i]<=vect[dq.back()])
+        dq.push_back(i);
+        else if(vect[i]>vect[dq.back()])
+        {
+            while(!dq.empty()&&vect[i]>vect[dq.back()])
+            dq.pop_back();
+            dq.push_back(i);
+        }
+        if(i>=k-1)
+        cout<<vect[dq.front()]<<" ";
+    }
+    
+}

@@ -1,0 +1,131 @@
+#include<bits/stdc++.h>
+using namespace std;
+struct node
+{
+    int data;
+    node * left;
+    node * right;
+};
+node * createnode(int data)
+{
+    node * p = new node();
+    p->data = data;
+    p->left= NULL;
+    p->right = NULL;
+    return p;
+}
+void rightview(node * root)
+{
+    int nodecount,x;
+    queue<node *> que;
+    node * p;
+    que.push(root);
+    while(!que.empty())
+    {
+        nodecount = que.size();
+        while(nodecount>0)
+        {
+              p= que.front();
+              que.pop();
+              if(p->left!=NULL)
+              {
+                  que.push(p->left);
+              }
+                if(p->right!=NULL)
+              {
+                  que.push(p->right);
+              }
+              nodecount--;
+        }
+        cout<<p->data<<" ";
+    }
+     
+}
+void leftview(node * root)
+{
+    int nodecount,x;
+    queue<node *> que;
+    node * p;
+    que.push(root);
+    bool IsFirst = true;
+    while(!que.empty())
+    {
+        nodecount = que.size();
+        while(nodecount>0)
+        {
+              p= que.front();
+              que.pop();
+               if(IsFirst)
+               cout<<p->data<<" ";
+              if(p->left!=NULL)
+              {
+                  que.push(p->left);
+              }
+                if(p->right!=NULL)
+              {
+                  que.push(p->right);
+              }
+              nodecount--;
+              IsFirst = false;
+        }
+        IsFirst = true;
+    }
+     
+}
+void topview(node * root)
+{
+    map<int,node *> mp;
+    mp[0]= root;
+    int nodecount,x;
+    queue<pair<node *,int>> que;
+    pair<node * ,int> pr;
+    node * p;
+    que.push(make_pair(root,0));
+    while(!que.empty())
+    {
+        nodecount = que.size();
+        while(nodecount>0)
+        {
+              pr= que.front();
+              que.pop();
+              p= pr.first;
+              x=pr.second;
+              if(mp.find(x)==mp.end())
+              {
+                  mp[x]=p;
+              }
+              if(p->left!=NULL)
+              {
+                  que.push(make_pair(p->left,x-1));
+              }
+                if(p->right!=NULL)
+              {
+                  que.push(make_pair(p->right,x+1));
+              }
+              nodecount--;
+        }
+    }
+       for(auto it = mp.begin();it!=mp.end();++it)
+        {
+           cout<<it->second->data<<" ";
+        }
+}
+int main()
+{
+   node * root = createnode(-15);
+    root->left = createnode(5); 
+    root->right = createnode(6); 
+    root->left->left = createnode(-8); 
+    root->left->right = createnode(1); 
+    root->left->left->left = createnode(2); 
+    root->left->left->right = createnode(6); 
+    root->right->left = createnode(3); 
+    root->right->right = createnode(9); 
+    root->right->right->right= createnode(0); 
+    root->right->right->right->left= createnode(4); 
+    root->right->right->right->right= createnode(-1); 
+    root->right->right->right->right->left= createnode(10); 
+   // topview(root);
+   //rightview(root);
+   leftview(root);
+}

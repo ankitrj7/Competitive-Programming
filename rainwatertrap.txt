@@ -1,0 +1,34 @@
+#include<bits/stdc++.h>
+using namespace std;
+int main ()
+{
+    vector<int> vect;
+    vector<int> LeftMax;
+    vector<int> RightMax;
+    int n,i,ans = 0;
+    cin>>n;
+    vect.resize(n);
+    LeftMax.resize(n);
+    RightMax.resize(n);
+    
+    for(i=0;i<n;i++)
+    cin>>vect[i];
+    
+    int maxval = -1;
+    LeftMax[0] = maxval;
+    RightMax[n-1] = maxval;
+    for(i=1;i<n;i++)
+    LeftMax[i]=max(LeftMax[i-1],vect[i-1]);
+    
+    for(i=n-2;i>=0;i--)
+    RightMax[i] = max(RightMax[i+1],vect[i+1]);
+        
+    for(i=0;i<n;i++)
+    {
+       
+        if(min(RightMax[i],LeftMax[i])-vect[i]>0)
+        ans+=min(RightMax[i],LeftMax[i])-vect[i];
+    }
+    cout<<ans;
+    
+}
